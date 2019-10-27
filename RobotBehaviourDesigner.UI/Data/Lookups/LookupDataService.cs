@@ -1,8 +1,8 @@
-﻿using RobotBehaviourDesigner.Model;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using RobotBehaviourDesigner.DataAccess.Repositories;
+using RobotBehaviourDesigner.Model;
 
 namespace RobotBehaviourDesigner.UI.Data.Lookups
 {

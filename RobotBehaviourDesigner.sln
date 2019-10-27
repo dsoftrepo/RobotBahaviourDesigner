@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29324.140
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RobotBehaviourDesigner.UI", "RobotBehaviorDesigner.UI\RobotBehaviourDesigner.UI.csproj", "{61ADF2C3-4703-406A-9B94-BFD75D8AEA91}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RobotBehaviourDesigner.UI", "RobotBehaviourDesigner.UI\RobotBehaviourDesigner.UI.csproj", "{61ADF2C3-4703-406A-9B94-BFD75D8AEA91}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RobotBehaviourDesigner.Model", "RobotBehaviorDesigner.Model\RobotBehaviourDesigner.Model.csproj", "{3943529C-DD85-4EC1-908E-93409B052684}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RobotBehaviourDesigner.Model", "RobotBehaviourDesigner.Model\RobotBehaviourDesigner.Model.csproj", "{3943529C-DD85-4EC1-908E-93409B052684}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RobotBehaviourDesigner.DataAccess", "RobotBehaviourDesigner.DataAccess\RobotBehaviourDesigner.DataAccess.csproj", "{45E958CF-531C-4521-AE05-7F4BCED522D5}"
 EndProject

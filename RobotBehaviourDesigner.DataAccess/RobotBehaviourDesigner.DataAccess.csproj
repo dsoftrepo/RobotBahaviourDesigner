@@ -51,18 +51,18 @@
     <Compile Include="Repositories\Repository.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RobotBehaviorDesigner.Model\RobotBehaviourDesigner.Model.csproj">
-      <Project>{3943529C-DD85-4EC1-908E-93409B052684}</Project>
-      <Name>RobotBehaviourDesigner.Model</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="MongoDB.Driver">
       <Version>2.9.2</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.2</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RobotBehaviourDesigner.Model\RobotBehaviourDesigner.Model.csproj">
+      <Project>{3943529c-dd85-4ec1-908e-93409b052684}</Project>
+      <Name>RobotBehaviourDesigner.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

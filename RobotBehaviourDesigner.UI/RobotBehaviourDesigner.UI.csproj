@@ -151,16 +151,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RobotBehaviorDesigner.Model\RobotBehaviourDesigner.Model.csproj">
-      <Project>{3943529c-dd85-4ec1-908e-93409b052684}</Project>
-      <Name>RobotBehaviourDesigner.Model</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\RobotBehaviourDesigner.DataAccess\RobotBehaviourDesigner.DataAccess.csproj">
-      <Project>{45E958CF-531C-4521-AE05-7F4BCED522D5}</Project>
-      <Name>RobotBehaviourDesigner.DataAccess</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Autofac">
       <Version>4.9.4</Version>
     </PackageReference>
@@ -188,6 +178,16 @@
     <PackageReference Include="Prism.Core">
       <Version>7.2.0.1367</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RobotBehaviourDesigner.DataAccess\RobotBehaviourDesigner.DataAccess.csproj">
+      <Project>{45e958cf-531c-4521-ae05-7f4bced522d5}</Project>
+      <Name>RobotBehaviourDesigner.DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RobotBehaviourDesigner.Model\RobotBehaviourDesigner.Model.csproj">
+      <Project>{3943529c-dd85-4ec1-908e-93409b052684}</Project>
+      <Name>RobotBehaviourDesigner.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
