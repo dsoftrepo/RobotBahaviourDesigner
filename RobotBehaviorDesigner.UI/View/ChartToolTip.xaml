@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="RobotBehaviourDesigner.UI.View.ChartToolTip"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RobotBehaviourDesigner.Model;assembly=RobotBehaviourDesigner.Model"
+             xmlns:wpf="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" 
+             d:DataContext="{d:DesignInstance local:ServoPoint}"
+             Background="#E4555555" Padding="10 5" BorderThickness="2" BorderBrush="#555555">
+
+	<ItemsControl ItemsSource="{Binding Data.Points}" Grid.IsSharedSizeScope="True">
+    <ItemsControl.ItemTemplate>
+      <DataTemplate DataType="{x:Type wpf:DataPointViewModel}">
+          <Grid Margin="2">
+              <Grid.ColumnDefinitions>
+	              <ColumnDefinition Width="Auto"/>
+	              <ColumnDefinition Width="Auto"/>
+	              <ColumnDefinition Width="*"/>
+              </Grid.ColumnDefinitions>
+              <Ellipse Grid.Column="0" Stroke="{Binding Series.Stroke}" StrokeThickness="2" Fill="{Binding Series.Fill}" Height="16" Width="16"></Ellipse>
+	          <TextBlock Grid.Column="1" Text="{Binding ChartPoint.Instance.(local:ServoPoint.Position), StringFormat=N2}" Margin="5 0 0 0" VerticalAlignment="Center" Foreground="White"/>
+	          <TextBlock Grid.Column="2" Text="{Binding Series.Title}" Margin="5 0 0 0" VerticalAlignment="Center" Foreground="White"/>
+          </Grid>
+      </DataTemplate>
+    </ItemsControl.ItemTemplate>
+	</ItemsControl>
+</UserControl>
