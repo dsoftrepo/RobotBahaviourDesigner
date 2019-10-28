@@ -20,6 +20,7 @@ namespace RobotBehaviourDesigner.DataAccess.Repositories
 		void Replace(T entity);
 		void Remove(T entity);
 		bool HasChanges();
+		bool HasChanged(T entity);
 		Task<bool> SaveChangesAsync();
 	}
 }

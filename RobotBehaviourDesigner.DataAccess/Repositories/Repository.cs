@@ -10,18 +10,20 @@ namespace RobotBehaviourDesigner.DataAccess.Repositories
 {
     public class Repository<T> : IRepository<T> where T : EntityBase
     {
-        private readonly List<T> _entitiesAdd;
-        private readonly List<T> _entitiesDelete;
-        private readonly Dictionary<string, T> _entitiesUpdate;
-        private readonly Dictionary<string, T> _entitiesReplace;
+        private readonly List<T> _entitiesToAdd;
+        private readonly List<T> _entitiesToDelete;
+        private readonly Dictionary<string, T> _entitiesToUpdate;
+        private readonly Dictionary<string, T> _entitiesToReplace;
+        private readonly ChangeTracker<T> _changeTracker;
         private readonly IDatabase _database;
 
-        public Repository(IDatabase database)
+		public Repository(IDatabase database)
         {
-            _entitiesAdd = new List<T>();
-            _entitiesDelete = new List<T>();
-            _entitiesUpdate = new Dictionary<string, T>();
-            _entitiesReplace = new Dictionary<string, T>();
+            _entitiesToAdd = new List<T>();
+            _entitiesToDelete = new List<T>();
+            _entitiesToUpdate = new Dictionary<string, T>();
+            _entitiesToReplace = new Dictionary<string, T>();
+			_changeTracker = new ChangeTracker<T>();
             _database = database;
         }
 
@@ -32,7 +34,10 @@ namespace RobotBehaviourDesigner.DataAccess.Repositories
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-	        return (IEnumerable<T>) await _database.Read<T>().ConfigureAwait(false);
+	        var results = (IEnumerable<T>) await _database.Read<T>().ConfigureAwait(false);
+	        IEnumerable<T> entityBases = results.ToList();
+	        _changeTracker.StartTracking(entityBases);
+			return entityBases;
         }
 
         public bool Exists(Expression<Func<T, bool>> predicate)
@@ -47,12 +52,14 @@ namespace RobotBehaviourDesigner.DataAccess.Repositories
 
         public T Find(Expression<Func<T, bool>> expression)
         {
-            return FindAsync(expression).Result;
+            return FindAsync(expression).Result;;
         }
 
         public async Task<T> FindAsync(Expression<Func<T, bool>> expression)
         {
-	        return (T)await _database.ReadSingle(expression).ConfigureAwait(false);
+	        var result = (T)await _database.ReadSingle(expression).ConfigureAwait(false);
+			_changeTracker.StartTracking(result);
+	        return result;
         }
 
         public IEnumerable<T> Select(Expression<Func<T, bool>> expression, bool cleanSearch = false)
@@ -62,71 +69,87 @@ namespace RobotBehaviourDesigner.DataAccess.Repositories
 
         public async Task<IEnumerable<T>> SelectAsync(Expression<Func<T, bool>> expression, bool cleanSearch = false)
         {
-            return (IEnumerable<T>) await _database.Read(expression).ConfigureAwait(false);
+            var results =  (IEnumerable<T>) await _database.Read(expression).ConfigureAwait(false);
+            IEnumerable<T> entityBases = results.ToList();
+            _changeTracker.StartTracking(entityBases);
+            return entityBases;
         }
 
         public void Add(T entity)
         {
-            _entitiesAdd.Add(entity);
+			_changeTracker.StartTracking(entity);
+            _entitiesToAdd.Add(entity);
         }
 
         public void Update(T entity)
         {
+	        if (!_changeTracker.HasChanged(entity)) return;
             string keyValue = entity.Id;
 
-            if (_entitiesUpdate.ContainsKey(keyValue))
-                _entitiesUpdate[keyValue] = entity;
+            if (_entitiesToUpdate.ContainsKey(keyValue))
+                _entitiesToUpdate[keyValue] = entity;
             else
-                _entitiesUpdate.Add(keyValue, entity);
+                _entitiesToUpdate.Add(keyValue, entity);
         }
 
         public void Replace(T entity)
         {
+	        if (!_changeTracker.HasChanged(entity)) return;
             string keyValue = entity.Id;
 
-            if (_entitiesReplace.ContainsKey(keyValue))
-                _entitiesReplace[keyValue] = entity;
+            if (_entitiesToReplace.ContainsKey(keyValue))
+                _entitiesToReplace[keyValue] = entity;
             else
-                _entitiesReplace.Add(keyValue, entity);
+                _entitiesToReplace.Add(keyValue, entity);
         }
 
         public void Remove(T entity)
         {
-            if (_entitiesDelete.Any(x => Equals(x.Id, entity.Id))) return;
-            _entitiesDelete.Add(entity);
+            if (_entitiesToDelete.Any(x => Equals(x.Id, entity.Id))) return;
+            _entitiesToDelete.Add(entity);
         }
 
         public bool HasChanges()
         {
-	        return _entitiesAdd.Any() || _entitiesUpdate.Any() || _entitiesReplace.Any() || _entitiesDelete.Any();
+	        return _entitiesToAdd.Any() || _entitiesToUpdate.Any() || _entitiesToReplace.Any() || _entitiesToDelete.Any();
+        }
+
+        public bool HasChanged(T entity)
+        {
+	        return _changeTracker.HasChanged(entity);
         }
 
         public async Task<bool> SaveChangesAsync()
         {
-            if (_entitiesAdd.Any())
+            if (_entitiesToAdd.Any())
             {
-                string[] results = await _database.Create(_entitiesAdd).ConfigureAwait(false);
-                _entitiesAdd.Clear();
+                string[] results = await _database.Create(_entitiesToAdd).ConfigureAwait(false);
+                _changeTracker.StartTracking(_entitiesToAdd);
+                _entitiesToAdd.Clear();
             }
 
-            if (_entitiesUpdate.Any())
+            if (_entitiesToUpdate.Any())
             {
-                List<T> latestChanges = _entitiesUpdate.Values.ToList();
+                List<T> latestChanges = _entitiesToUpdate.Values.ToList();
                 string[] results = await _database.Update(latestChanges).ConfigureAwait(false);
-                _entitiesUpdate.Clear();
+                _changeTracker.OnDbSaved(_entitiesToUpdate.Values);
+                _entitiesToUpdate.Clear();
             }
 
-            if (_entitiesReplace.Any())
+            if (_entitiesToReplace.Any())
             {
-                List<T> latestChanges = _entitiesReplace.Values.ToList();
+                List<T> latestChanges = _entitiesToReplace.Values.ToList();
                 string[] results = await _database.Replace(latestChanges).ConfigureAwait(false);
-                _entitiesReplace.Clear();
+                _entitiesToReplace.Clear();
+				_changeTracker.OnDbSaved(_entitiesToReplace.Values);
+				_entitiesToReplace.Clear();
             }
 
-            if (_entitiesDelete.Any())
+            if (_entitiesToDelete.Any())
             {
-                string[] deleteResults = await _database.Delete(_entitiesDelete).ConfigureAwait(false);
-                _entitiesDelete.Clear();
+                string[] deleteResults = await _database.Delete(_entitiesToDelete).ConfigureAwait(false);
+                _changeTracker.StartTracking(_entitiesToDelete);
+                _entitiesToDelete.Clear();
             }
 
             return true;
@@ -135,6 +158,7 @@ namespace RobotBehaviourDesigner.DataAccess.Repositories
         public void Dispose()
         {
             SaveChangesAsync().Wait();
+            _changeTracker.StopTracking();
         }
     }
 }

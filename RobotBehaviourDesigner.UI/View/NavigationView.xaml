@@ -9,9 +9,9 @@
 
 	<UserControl.Resources>
 		<DataTemplate x:Key="NaviItemTemplate">
-			<Button Command="{Binding OpenDetailViewCommand}" FontSize="14" HorizontalContentAlignment="Left" Padding="0 4 8 4" VerticalAlignment="Center">
+			<Button Command="{Binding OpenDetailViewCommand}" FontSize="14" HorizontalContentAlignment="Left" Padding="0 4 8 4" VerticalAlignment="Center" BorderThickness="0">
 				<StackPanel Orientation="Horizontal">
-					<iconPacks:PackIconMaterial Kind="ChartTimeline" VerticalAlignment="Center" Width="10"  Margin="6 0"/>
+					<iconPacks:PackIconMaterial Kind="ChartMultiline" VerticalAlignment="Center" Width="10"  Margin="6 0"/>
 					<TextBlock Text="{Binding DisplayMember}"></TextBlock>
 				</StackPanel>
 			</Button>

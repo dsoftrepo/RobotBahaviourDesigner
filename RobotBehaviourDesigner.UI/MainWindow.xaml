@@ -49,19 +49,19 @@
 		<DockPanel Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0" Margin="0 0 0 2" Background="{StaticResource GrayBrush10}">
 			<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
 				<Button Visibility="Collapsed"></Button>
-				<Button Command="{Binding CreateNewDetailCommand}" CommandParameter="{x:Type details:MotionDetailViewModel}" >
+				<Button Command="{Binding CreateNewDetailCommand}" CommandParameter="{x:Type details:MotionDetailViewModel}" BorderThickness="0">
 					<StackPanel Orientation="Horizontal">
 						<iconPacks:PackIconMaterial Kind="PlaylistPlus" Margin="4 0" Height="20" Width="20"/>
 						<TextBlock Text="Motion" FontSize="14"/>
 					</StackPanel>
 				</Button>
-				<Button Command="{Binding CreateNewDetailCommand}" CommandParameter="{x:Type details:MotionDetailViewModel}" >
+				<Button Command="{Binding CreateNewDetailCommand}" CommandParameter="{x:Type details:MotionDetailViewModel}" BorderThickness="0">
 					<StackPanel Orientation="Horizontal">
 						<iconPacks:PackIconMaterial Kind="PlaylistPlus" Margin="4 0" Height="20" Width="20"/>
 						<TextBlock Text="Action" FontSize="14"/>
 					</StackPanel>
 				</Button>
-				<Button Command="{Binding CreateNewDetailCommand}" CommandParameter="{x:Type details:MotionDetailViewModel}" >
+				<Button Command="{Binding CreateNewDetailCommand}" CommandParameter="{x:Type details:MotionDetailViewModel}" BorderThickness="0">
 					<StackPanel Orientation="Horizontal">
 						<iconPacks:PackIconMaterial Kind="PlaylistPlus" Margin="4 0" Height="20" Width="20"/>
 						<TextBlock Text="Behaviour" FontSize="14"/>
@@ -149,7 +149,7 @@
 					<ItemsPanelTemplate>
 						<Grid>
 							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="100" />
+								<ColumnDefinition Width="80" />
 								<ColumnDefinition Width="Auto" />
 								<ColumnDefinition Width="*" />
 								<ColumnDefinition Width="Auto" />
@@ -159,11 +159,11 @@
 					</ItemsPanelTemplate>
 				</StatusBar.ItemsPanel>
 				<StatusBarItem>
-					<TextBlock Text=" app test " />
+					<TextBlock Text="Data Source" />
 				</StatusBarItem>
 				<Separator Grid.Column="1" />
 				<StatusBarItem Grid.Column="2">
-					<TextBlock Text="c:\path\of\current\file.txt" />
+					<TextBlock Text="{Binding DataSourceInfo}" />
 				</StatusBarItem>
 				<Separator Grid.Column="3" />
 				<StatusBarItem Grid.Column="4" HorizontalAlignment="Center">

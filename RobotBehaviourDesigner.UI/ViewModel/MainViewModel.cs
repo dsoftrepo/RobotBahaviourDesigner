@@ -23,8 +23,10 @@ namespace RobotBehaviourDesigner.UI.ViewModel
 			INavigationViewModel navigationViewModel,
 			IIndex<string, IDetailViewModel> detailViewModelCreator,
 			IEventAggregator eventAggregator,
-			IMessageDialogService messageDialogService)
+			IMessageDialogService messageDialogService,
+			string dataSourceInfo)
 		{
+			DataSourceInfo = dataSourceInfo;
 			_detailViewModelCreator = detailViewModelCreator;
 			_messageDialogService = messageDialogService;
 
@@ -44,6 +46,8 @@ namespace RobotBehaviourDesigner.UI.ViewModel
 		{
 			await NavigationViewModel.LoadAsync();
 		}
+
+		public string DataSourceInfo { get; }
 
 		public ICommand CreateNewDetailCommand { get; }
 
@@ -76,9 +80,7 @@ namespace RobotBehaviourDesigner.UI.ViewModel
 				}
 				catch(Exception ex)
 				{
-					await _messageDialogService.ShowInfoDialogAsync("Could not load the entity, " +
-					                                                "maybe it was deleted in the meantime by another user. " +
-					                                                "The navigation is refreshed for you.");
+					await _messageDialogService.ShowInfoDialogAsync($"Could not load the entity {ex.Message}");
 					await NavigationViewModel.LoadAsync();
 					return;
 				}

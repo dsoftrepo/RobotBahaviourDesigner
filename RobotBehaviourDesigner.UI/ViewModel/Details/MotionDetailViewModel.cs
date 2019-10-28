@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using MongoDB.Bson;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Prism.Commands;
 using Prism.Events;
 using RobotBehaviourDesigner.DataAccess.Repositories;
@@ -38,9 +38,10 @@ namespace RobotBehaviourDesigner.UI.ViewModel.Details
 
 		private void InitializeMotion(Motion motion)
 		{
-			Motion = new MotionWrapper(motion);
+			Motion = new MotionWrapper(motion, _motionRepository.Select(x=>x.Name != motion.Name).Select(x=>x.Name).ToArray());
 			Motion.PropertyChanged += (s, e) =>
 			{
+				_motionRepository.Update(motion);
 				if (!HasChanges) HasChanges = _motionRepository.HasChanges();
 				if (e.PropertyName == nameof(Motion.HasErrors)) ((DelegateCommand) SaveCommand).RaiseCanExecuteChanged();
 				if (e.PropertyName == nameof(Motion.Name)) SetTitle();
@@ -71,13 +72,12 @@ namespace RobotBehaviourDesigner.UI.ViewModel.Details
 
 		protected override async void OnSaveExecute()
 		{
-			await SaveAsync(_motionRepository.SaveChangesAsync,
-				() =>
-				{
-					HasChanges = _motionRepository.HasChanges();
-					Id = Motion.Id;
-					RaiseDetailSavedEvent(Motion.Id, Motion.Name);
-				});
+			await SaveAsync(_motionRepository.SaveChangesAsync, () =>
+			{
+				HasChanges = _motionRepository.HasChanged(Motion.Model);
+				Id = Motion.Id;
+				RaiseDetailSavedEvent(Motion.Id, Motion.Name);
+			});
 		}
 
 		protected override bool OnSaveCanExecute()
@@ -90,7 +90,7 @@ namespace RobotBehaviourDesigner.UI.ViewModel.Details
 		protected override async void OnDeleteExecute()
 		{
 			MessageDialogResult result = await MessageDialogService.ShowOkCancelDialogAsync(
-				$"Do you really want to delete the friend {Motion.Name} ?",
+				$"Do you really want to delete the {Motion.Name} ?",
 				"Question");
 
 			if (result != MessageDialogResult.Ok) return;
@@ -104,6 +104,7 @@ namespace RobotBehaviourDesigner.UI.ViewModel.Details
 		{
 			var motion = new Motion();
 			_motionRepository.Add(motion);
+			HasChanges = _motionRepository.HasChanges();
 			return motion;
 		}
 

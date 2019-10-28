@@ -17,17 +17,17 @@ namespace RobotBehaviourDesigner.UI.Startup
 		public IContainer Bootstrap()
 		{
 			var builder = new ContainerBuilder();
+			string connectionString = ConfigurationManager.ConnectionStrings["RobotBehaviourDesignerDb"].ConnectionString;
 
 			builder.RegisterType<EventAggregator>().As<IEventAggregator>().SingleInstance();
 			builder.RegisterType<MainWindow>().AsSelf();
-			builder.RegisterType<MainViewModel>().AsSelf();
+			builder.RegisterType<MainViewModel>().AsSelf().WithParameter("dataSourceInfo", connectionString);
 			builder.RegisterType<MessageDialogService>().As<IMessageDialogService>();
 			builder.RegisterType<NavigationViewModel>().As<INavigationViewModel>();
 			
 			builder.RegisterType<MotionDetailViewModel>().Keyed<IDetailViewModel>(nameof(MotionDetailViewModel));
 			builder.RegisterType<MotionGraphDetailViewModel>().Keyed<IDetailViewModel>(nameof(MotionGraphDetailViewModel));
-
-			string connectionString = ConfigurationManager.ConnectionStrings["RobotBehaviourDesignerDb"].ConnectionString;
+			
 			builder.Register(c => new MongoDataBase(connectionString)).As<IDatabase>();
 			builder.RegisterType<LookupDataService>().AsImplementedInterfaces();
 			builder.RegisterType<MotionRepository>().As<IRepository<Motion>>();
